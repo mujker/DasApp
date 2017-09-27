@@ -25,9 +25,7 @@ namespace DasApp
 
         public List<YXJK_JKD> SoureJkds = new List<YXJK_JKD>();
         private bool _taskFlag = true;
-        WindowState ws;
-        WindowState wsl;
-        NotifyIcon notifyIcon;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -76,7 +74,7 @@ namespace DasApp
                     IP = ConfigurationManager.AppSettings["rmi-ip"],
                     Port = Convert.ToInt32(ConfigurationManager.AppSettings["rmi-port"])
                 };
-                Parallel.ForEach(SoureJkds.Where(j => j.RMI_ID.Equals(item.RMI_ID)), jkd =>
+                Parallel.ForEach(SoureJkds.Where(j => item.RMI_ID.Equals(j.RMI_ID)), jkd =>
                 {
                     jkd._sw = _sw;
                     Task.Factory.StartNew(delegate
