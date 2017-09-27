@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using Dapper;
 using DasApp.Models;
 using DasApp.Socket;
@@ -51,7 +50,7 @@ namespace DasApp
 //                {
 //                    SoureJkds.Add(new YXJK_JKD() {JKD_ID = "tyzx"+i, JKD_NAME = "体验中心"+i});
 //                }
-                this.Grid.ItemsSource = SoureJkds;
+                Grid.ItemsSource = SoureJkds;
             }
             catch (Exception ex)
             {
@@ -69,14 +68,14 @@ namespace DasApp
                 {
                     continue;
                 }
-                SocketWrapper _sw = new SocketWrapper()
+                SocketWrapper sw = new SocketWrapper()
                 {
-                    IP = ConfigurationManager.AppSettings["rmi-ip"],
-                    Port = Convert.ToInt32(ConfigurationManager.AppSettings["rmi-port"])
+                    IP = Settings.RmiIp,
+                    Port = Settings.RmiPort
                 };
                 Parallel.ForEach(SoureJkds.Where(j => item.RMI_ID.Equals(j.RMI_ID)), jkd =>
                 {
-                    jkd._sw = _sw;
+                    jkd._sw = sw;
                     Task.Factory.StartNew(delegate
                     {
                         while (_taskFlag)

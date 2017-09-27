@@ -89,6 +89,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\YXJK_JKD.cs" />
     <Compile Include="Socket\DataPacketCodec.cs" />
     <Compile Include="Socket\SocketResolve.cs" />

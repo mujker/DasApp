@@ -1,11 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Runtime.CompilerServices;
-using System.Text;
 using DasApp.Socket;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ServiceStack.Redis;
 
 namespace DasApp.Models
@@ -59,13 +55,12 @@ namespace DasApp.Models
 
         public void SetRedisValue()
         {
-            using (RedisClient _redis = new RedisClient(ConfigurationManager.AppSettings["redis_ip"],
-                Convert.ToInt32(ConfigurationManager.AppSettings["redis_port"]))
+            using (RedisClient redis = new RedisClient(Settings.RedisIp, Settings.RedisPort)
             {
-                Password = ConfigurationManager.AppSettings["redis_pw"]
+                Password = Settings.RedisPw
             })
             {
-                _redis.Set(JKD_ID, JKD_VALUE);
+                redis.Set(JKD_ID, JKD_VALUE);
             }
         }
 
