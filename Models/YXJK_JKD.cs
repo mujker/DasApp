@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using DasApp.Log4Net;
 using DasApp.Socket;
 using ServiceStack.Redis;
 
@@ -49,7 +50,7 @@ namespace DasApp.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                LogHelper.WriteLog(ex.Source, ex);
             }
         }
 

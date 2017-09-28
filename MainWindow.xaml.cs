@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Dapper;
+using DasApp.Log4Net;
 using DasApp.Models;
 using DasApp.Socket;
 using Oracle.ManagedDataAccess.Client;
@@ -30,6 +31,7 @@ namespace DasApp
             InitializeComponent();
             InitiJkd();
             StartMethod();
+            LogHelper.WriteLog("启动");
         }
 
         private void InitiJkd()
@@ -54,8 +56,7 @@ namespace DasApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                throw;
+                LogHelper.WriteLog(ex.Source, ex);
             }
         }
 
@@ -91,6 +92,7 @@ namespace DasApp
         private void Window_Closed(object sender, EventArgs e)
         {
             _taskFlag = false;
+            LogHelper.WriteLog("停止");
             Environment.Exit(0);
         }
     }
