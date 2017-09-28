@@ -3,10 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
         xmlns:local="clr-namespace:DasApp"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         Title="采集数据转存Redis程序" Height="350" Width="525" Closed="Window_Closed">
     <Grid>
-        <DataGrid Name="Grid" />
+        <!--        <DataGrid Name="Grid"></DataGrid>-->
+        <telerik:RadGridView x:Name="Grid" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" SelectionMode="Extended">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CURR_TIME}" Width="140"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_ID}" Width="100"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RMI_ID}" Width="45"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_NAME}" Width="150"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=REDIS_SAVE}" Width="45"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_VALUE}" Width="*"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
     </Grid>
 </Window>
