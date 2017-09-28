@@ -17,7 +17,7 @@ namespace DasApp.Models
         private string _REDIS_SAVE;
 
         private int sleepTime = 2000;
-        private const string CryptKey = "hxsoft++";
+        public static string CryptKey = "hxsoft++";
         public SocketWrapper Sw;
 
         public void SocketMethod()

@@ -6,17 +6,26 @@
         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
         xmlns:local="clr-namespace:DasApp"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="采集数据转存Redis程序" Height="350" Width="525" Closed="Window_Closed">
+        Title="采集数据转存Redis程序" Height="720" Width="1280" Closed="Window_Closed">
     <Grid>
         <!--        <DataGrid Name="Grid"></DataGrid>-->
-        <telerik:RadGridView x:Name="Grid" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" SelectionMode="Extended">
+        <telerik:RadGridView x:Name="Grid" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+                             AutoGenerateColumns="False" SelectionMode="Extended"
+                             local:ContextMenuBehavior.ContextMenu="{Binding ElementName=GridContextMenu}">
+            <telerik:RadContextMenu.ContextMenu>
+                <telerik:RadContextMenu x:Name="GridContextMenu">
+                    <telerik:RadContextMenu.Items>
+                        <telerik:RadMenuItem Header="解密" />
+                    </telerik:RadContextMenu.Items>
+                </telerik:RadContextMenu>
+            </telerik:RadContextMenu.ContextMenu>
             <telerik:RadGridView.Columns>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CURR_TIME}" Width="140"/>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_ID}" Width="100"/>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RMI_ID}" Width="45"/>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_NAME}" Width="150"/>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=REDIS_SAVE}" Width="45"/>
-                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_VALUE}" Width="*"/>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CURR_TIME}" Width="140" />
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_ID}" Width="100" />
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RMI_ID}" Width="45" />
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_NAME}" Width="150" />
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=REDIS_SAVE}" Width="45" />
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=JKD_VALUE}" Width="*" />
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

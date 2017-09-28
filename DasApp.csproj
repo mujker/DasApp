@@ -76,7 +76,11 @@
     <Reference Include="Telerik.Windows.Controls, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
     <Reference Include="Telerik.Windows.Controls.GridView, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
     <Reference Include="Telerik.Windows.Controls.Input, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.RichTextBoxUI, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
     <Reference Include="Telerik.Windows.Data, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Documents, Version=2017.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Documents.Core, Version=2017.1.213.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -86,13 +90,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ContextMenuBehavior.cs" />
+    <Compile Include="DeCodeWin.xaml.cs">
+      <DependentUpon>DeCodeWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Log4Net\LogHelper.cs" />
+    <Compile Include="Models\LanguageSyntaxStructure.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\Token.cs" />
+    <Compile Include="Models\Tokenizer.cs" />
+    <Compile Include="Models\XmlSyntaxParser.cs" />
     <Compile Include="Models\YXJK_JKD.cs" />
     <Compile Include="Redis\RedisManager.cs" />
     <Compile Include="Socket\DataPacketCodec.cs" />
     <Compile Include="Socket\SocketResolve.cs" />
     <Compile Include="Socket\SocketWrapper.cs" />
+    <Page Include="DeCodeWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
