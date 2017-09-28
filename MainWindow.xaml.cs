@@ -76,7 +76,7 @@ namespace DasApp
                 };
                 Parallel.ForEach(SoureJkds.Where(j => item.RMI_ID.Equals(j.RMI_ID)), jkd =>
                 {
-                    jkd._sw = sw;
+                    jkd.Sw = sw;
                     Task.Factory.StartNew(delegate
                     {
                         while (_taskFlag)

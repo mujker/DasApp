@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DasApp.Log4Net;
+using DasApp.Redis;
 using DasApp.Socket;
-using ServiceStack.Redis;
 
 namespace DasApp.Models
 {
@@ -13,24 +13,25 @@ namespace DasApp.Models
         private string _JKD_NAME;
         private string _JKD_VALUE;
         private string _RMI_ID;
-        private string _CurrTime;
+        private string _CURR_TIME;
+        private string _REDIS_SAVE;
 
         private int sleepTime = 2000;
         private const string CryptKey = "hxsoft++";
-        public SocketWrapper _sw;
+        public SocketWrapper Sw;
 
         public void SocketMethod()
         {
             try
             {
-                if (!_sw.IsOpen())
+                if (!Sw.IsOpen())
                 {
-                    _sw.Connect();
+                    Sw.Connect();
                 }
                 var strSendData = $"rij,{this.JKD_ID}";
                 var ensendData = DataPacketCodec.Encode(strSendData, CryptKey);
-                string desStr = _sw.Receive($"{ensendData}#");
-                CurrTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string desStr = Sw.Receive($"{ensendData}#");
+                CURR_TIME = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 if (string.IsNullOrEmpty(desStr) || desStr.IndexOf("#") == 0)
                 {
                     JKD_VALUE = "#";
@@ -56,22 +57,20 @@ namespace DasApp.Models
 
         public void SetRedisValue()
         {
-            using (RedisClient redis = new RedisClient(Settings.RedisIp, Settings.RedisPort)
-            {
-                Password = Settings.RedisPw
-            })
-            {
-                redis.Set(JKD_ID, JKD_VALUE);
-            }
+            //            using (var client = ConnectionMultiplexer.Connect(Settings.ConOption))
+            //            {
+            //                REDIS_SAVE = client.GetDatabase().StringSet(JKD_ID, JKD_VALUE).ToString();
+            //            }
+            REDIS_SAVE = RedisManager.Redis.GetDatabase().StringSet(JKD_ID, JKD_VALUE).ToString();
         }
 
-        public string CurrTime
+        public string CURR_TIME
         {
-            get { return _CurrTime; }
+            get { return _CURR_TIME; }
 
             set
             {
-                _CurrTime = value;
+                _CURR_TIME = value;
                 OnPropertyChanged();
             }
         }
@@ -98,17 +97,6 @@ namespace DasApp.Models
             }
         }
 
-        public string JKD_VALUE
-        {
-            get { return _JKD_VALUE; }
-
-            set
-            {
-                _JKD_VALUE = value;
-                OnPropertyChanged();
-            }
-        }
-
         public string RMI_ID
         {
             get { return _RMI_ID; }
@@ -116,6 +104,29 @@ namespace DasApp.Models
             set
             {
                 _RMI_ID = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public string REDIS_SAVE
+        {
+            get { return _REDIS_SAVE; }
+
+            set
+            {
+                _REDIS_SAVE = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string JKD_VALUE
+        {
+            get { return _JKD_VALUE; }
+
+            set
+            {
+                _JKD_VALUE = value;
                 OnPropertyChanged();
             }
         }

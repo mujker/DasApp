@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using StackExchange.Redis;
 
 namespace DasApp.Models
 {
@@ -16,18 +17,15 @@ namespace DasApp.Models
         public static int RmiPort = Convert.ToInt32(ConfigurationManager.AppSettings["rmi-port"]);
 
         /// <summary>
-        /// redis ip
+        /// redis连接config
         /// </summary>
-        public static string RedisIp = ConfigurationManager.AppSettings["redis_ip"];
-
-        /// <summary>
-        /// redis port
-        /// </summary>
-        public static int RedisPort = Convert.ToInt32(ConfigurationManager.AppSettings["redis_port"]);
-
-        /// <summary>
-        /// redis password
-        /// </summary>
-        public static string RedisPw = ConfigurationManager.AppSettings["redis_pw"];
+        public static ConfigurationOptions ConOption = new ConfigurationOptions()
+        {
+            EndPoints =
+            {
+                { ConfigurationManager.AppSettings["redis_ip"], Convert.ToInt32(ConfigurationManager.AppSettings["redis_port"]) }
+            },
+            Password = ConfigurationManager.AppSettings["redis_pw"]
+        };
     }
 }
