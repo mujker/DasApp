@@ -30,7 +30,8 @@ namespace DasApp
         {
             InitializeComponent();
             InitiJkd();
-            StartMethod();
+//            StartMethod();
+            MultiTaskMethod();
             LogHelper.WriteLog("启动");
         }
 
@@ -59,7 +60,25 @@ namespace DasApp
                 LogHelper.WriteLog(ex.Source, ex);
             }
         }
-
+        private void MultiTaskMethod()
+        {
+            Parallel.ForEach(SoureJkds, jkd =>
+            {
+                jkd.Sw = new SocketWrapper()
+                {
+                    IP = Settings.RmiIp,
+                    Port = Settings.RmiPort
+                }; ;
+                Task.Factory.StartNew(delegate
+                {
+                    while (_taskFlag)
+                    {
+                        jkd.SocketMethod();
+                        Thread.Sleep(2000);
+                    }
+                }, TaskCreationOptions.LongRunning);
+            });
+        }
         private void StartMethod()
         {
             var groupBy = SoureJkds.GroupBy(item => new {item.RMI_ID}).Select(item => item.Key).ToList();
