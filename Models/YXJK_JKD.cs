@@ -61,7 +61,7 @@ namespace DasApp.Models
             //            {
             //                REDIS_SAVE = client.GetDatabase().StringSet(JKD_ID, JKD_VALUE).ToString();
             //            }
-            REDIS_SAVE = RedisManager.Redis.GetDatabase().StringSet(JKD_ID, JKD_VALUE).ToString();
+            REDIS_SAVE = RedisManager.SetRedisValue(JKD_ID, JKD_VALUE).ToString();
         }
 
         public string CURR_TIME
