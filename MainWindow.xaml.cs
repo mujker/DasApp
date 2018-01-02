@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
-using System.Threading;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dapper;
@@ -11,27 +12,29 @@ using DasApp.Log4Net;
 using DasApp.Models;
 using DasApp.Socket;
 using Oracle.ManagedDataAccess.Client;
-using MessageBox = System.Windows.MessageBox;
+using ServiceStack.Redis;
+using SuperSocket.ClientEngine;
 
 namespace DasApp
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    ///     MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IDbConnection _dbc;
         private const string JkdSql = "SELECT JKD_ID, JKD_NAME, RMI_ID FROM yxjk_jkd where ISRUN = 1";
+        public static string CryptKey = "hxsoft++";
+        private IDbConnection _dbc;
+        private bool _taskFlag = true;
 
         public List<YXJK_JKD> SoureJkds = new List<YXJK_JKD>();
-        private bool _taskFlag = true;
 
         public MainWindow()
         {
             InitializeComponent();
             InitiJkd();
-//            StartMethod();
-            MultiTaskMethod();
+            StartMethod();
+//            MultiTaskMethod();
             LogHelper.WriteLog("启动");
         }
 
@@ -60,52 +63,78 @@ namespace DasApp
                 LogHelper.WriteLog(ex.Source, ex);
             }
         }
-        private void MultiTaskMethod()
-        {
-            Parallel.ForEach(SoureJkds, jkd =>
-            {
-                jkd.Sw = new SocketWrapper()
-                {
-                    IP = Settings.RmiIp,
-                    Port = Settings.RmiPort
-                }; ;
-                Task.Factory.StartNew(delegate
-                {
-                    while (_taskFlag)
-                    {
-                        jkd.SocketMethod();
-                        Thread.Sleep(2000);
-                    }
-                }, TaskCreationOptions.LongRunning);
-            });
-        }
+
         private void StartMethod()
         {
-            var groupBy = SoureJkds.GroupBy(item => new {item.RMI_ID}).Select(item => item.Key).ToList();
-            foreach (var item in groupBy)
+            Parallel.ForEach(SoureJkds, item =>
             {
-                if (string.IsNullOrEmpty(item.RMI_ID))
+                Task.Factory.StartNew(async delegate
                 {
-                    continue;
-                }
-                SocketWrapper sw = new SocketWrapper()
-                {
-                    IP = Settings.RmiIp,
-                    Port = Settings.RmiPort
-                };
-                Parallel.ForEach(SoureJkds.Where(j => item.RMI_ID.Equals(j.RMI_ID)), jkd =>
-                {
-                    jkd.Sw = sw;
-                    Task.Factory.StartNew(delegate
+                    var client = new EasyClient();
+
+                    /***
+                     * 初始化socket连接, 接受返回数据处理
+                     * HxReceiveFilter为自定义的协议
+                     * ***/
+                    client.Initialize(new HxReceiveFilter(), request =>
                     {
-                        while (_taskFlag)
+                        try
                         {
-                            jkd.SocketMethod();
-                            Thread.Sleep(2000);
+                            item.CURR_TIME = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            item.JKD_VALUE = request.Key;
+                            using (var redis = new RedisClient(Settings.RedisIp, Settings.RedisPort, Settings.RedisPw))
+                            {
+                                try
+                                {
+                                    item.REDIS_SAVE = redis.Set(item.JKD_ID, item.JKD_VALUE).ToString();
+//                                var s = redis.Get<string>(item.JKD_ID);
+//                                Console.WriteLine(s);
+                                }
+                                catch (Exception e)
+                                {
+                                    item.REDIS_SAVE = bool.FalseString;
+                                    LogHelper.WriteLog(e.Source, e);
+                                }
+                            }
                         }
-                    }, TaskCreationOptions.LongRunning);
+                        catch (Exception ex)
+                        {
+                            LogHelper.WriteLog(ex.Source, ex);
+                        }
+                    });
+                    // Connect to the server
+                    await client.ConnectAsync(new IPEndPoint(IPAddress.Parse(Settings.RmiIp), Settings.RmiPort));
+
+                    while (_taskFlag)
+                        try
+                        {
+                            if (client.IsConnected)
+                            {
+                                //获取发送字符串
+                                var enStr = DataPacketCodec.Encode($"rij,{item.JKD_ID}", CryptKey) + "#";
+                                // Send data to the server
+                                client.Send(Encoding.UTF8.GetBytes(enStr));
+                            }
+                            else
+                            {
+                                await client.ConnectAsync(new IPEndPoint(IPAddress.Parse(Settings.RmiIp),
+                                    Settings.RmiPort));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.WriteLog(ex.Source, ex);
+                            // reconnet
+                            await client.ConnectAsync(new IPEndPoint(IPAddress.Parse(Settings.RmiIp),
+                                Settings.RmiPort));
+                        }
+                        finally
+                        {
+                            await Task.Delay(3000);
+                        }
+                    await client.Close();
                 });
-            }
+            });
         }
 
         private void Window_Closed(object sender, EventArgs e)
