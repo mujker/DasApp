@@ -5,6 +5,8 @@ namespace DasApp.Models
 {
     public class Settings
     {
+        public static string CryptKey = "hxsoft++";
+
         /// <summary>
         ///     rmi ip
         /// </summary>

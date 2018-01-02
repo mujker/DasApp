@@ -67,7 +67,7 @@ namespace DasApp
                         if (jkd.JKD_VALUE.TrimEnd('#').Length == 0)
                             return;
                         var dcw = new DeCodeWin();
-                        var deStr = DataPacketCodec.Decode(jkd.JKD_VALUE.TrimEnd('#'), MainWindow.CryptKey);
+                        var deStr = DataPacketCodec.Decode(jkd.JKD_VALUE.TrimEnd('#'), Settings.CryptKey);
                         dcw.Tb1.Text = deStr;
                         dcw.ShowDialog();
                         break;

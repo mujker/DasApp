@@ -23,7 +23,6 @@ namespace DasApp
     public partial class MainWindow : Window
     {
         private const string JkdSql = "SELECT JKD_ID, JKD_NAME, RMI_ID FROM yxjk_jkd where ISRUN = 1";
-        public static string CryptKey = "hxsoft++";
         private IDbConnection _dbc;
         private bool _taskFlag = true;
 
@@ -111,7 +110,7 @@ namespace DasApp
                             if (client.IsConnected)
                             {
                                 //获取发送字符串
-                                var enStr = DataPacketCodec.Encode($"rij,{item.JKD_ID}", CryptKey) + "#";
+                                var enStr = DataPacketCodec.Encode($"rij,{item.JKD_ID}", Settings.CryptKey) + "#";
                                 // Send data to the server
                                 client.Send(Encoding.UTF8.GetBytes(enStr));
                             }
