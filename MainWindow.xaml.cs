@@ -70,7 +70,7 @@ namespace DasApp
                 Task.Factory.StartNew(async delegate
                 {
                     var client = new EasyClient();
-
+                    int retryCount = 0;
                     /***
                      * 初始化socket连接, 接受返回数据处理
                      * HxReceiveFilter为自定义的协议
@@ -81,13 +81,24 @@ namespace DasApp
                         {
                             item.CURR_TIME = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                             item.JKD_VALUE = request.Key;
+                            if (request.Key.Equals("#"))
+                            {
+                                retryCount++;
+                            }
+                            else
+                            {
+                                retryCount = 0;
+                            }
+                            if (retryCount <= Settings.RetryCount && retryCount != 0)
+                            {
+                                item.REDIS_SAVE = bool.FalseString;
+                                return;
+                            }
                             using (var redis = new RedisClient(Settings.RedisIp, Settings.RedisPort, Settings.RedisPw))
                             {
                                 try
                                 {
                                     item.REDIS_SAVE = redis.Set(item.JKD_ID, item.JKD_VALUE).ToString();
-//                                var s = redis.Get<string>(item.JKD_ID);
-//                                Console.WriteLine(s);
                                 }
                                 catch (Exception e)
                                 {

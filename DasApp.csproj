@@ -176,6 +176,7 @@
     </EmbeddedResource>
     <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -193,6 +194,7 @@
     <None Include="Resources\tubiao.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
     <Content Include="Lib\Oracle.ManagedDataAccess.dll" />
   </ItemGroup>
   <ItemGroup>
